@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Button Hover</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #111;
+        min-height: 100vh;
+    }
+
+    .btn{
+        padding: 15px 30px;
+        border: none;
+        color: #fff;
+        background: #222;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+
+    }
+
+    .btn::before{
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        background: #00f7ff;
+        left: 0;
+        top: 0;
+        transition: 0.5s;
+        color: #fff;
+        z-index: -1;
+    }
+
+    .btn:hover::before{
+        width: 100%;
+    }
+
+    .btn:hover{
+        color: #fff;
+        box-shadow: 0 0 15px #00f7ff;
+    }
+
+
+</style>
+<body>
+    <button class="btn">Hover Me</button>
+</body>
+</html>

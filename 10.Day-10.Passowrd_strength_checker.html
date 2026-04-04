@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Checker</title>
+</head>
+<style>
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: whitesmoke;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#top{
+    color: rgba(38,51,234);
+    text-decoration: underline;
+}
+
+.group{
+    text-align: center;
+    width: 300px;
+}
+
+.group label{
+    display: block;
+    padding: 15px 0;
+}
+
+.input-box{
+    position: relative;
+}
+
+.group input{
+    border: none;
+    outline: none;
+    padding: 15px;
+    width: calc(100% - 30px);
+    border-radius: 10px;
+    font-size: 18px;
+    background-color: rgba(123,255,255,0.277);
+}
+
+input:focus{
+    background: rgba(70,204,227,0.91);
+    transition: all 0.4s;
+}
+
+/* Toggle Button  */
+.toggle{
+    position: relative;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.power-container{
+    background-color: rgba(107,164,247,0.857);
+    width: 100%;
+    height: 12px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+#power-point{
+    width: 1%;
+    height: 100%;
+    border-radius: 5px;
+    background: red;
+    transition: 0.5s;
+}
+
+#strength-text{
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+<body>
+    <div class="group">
+        <h2 id="top">Password Strength Checker</h2>
+
+        <!-- input + toggle  -->
+         <div class="input-box">
+            <input type="password" id="password" placeholder="Enter your Password">
+            <span class="toggle" id="toggleBtn">👁</span>
+         </div>
+
+         <label for="">Strength</label>
+         <div class="power-container">
+            <div id="power-point"></div>
+         </div>
+
+         <p id="strength-text">Very Weak</p>
+    </div>
+</body>
+<script>
+    let password = document.getElementById('password');
+    let power = document.getElementById('power-point');
+    let strengthText = document.getElementById('strength-text');
+    let toggleBtn = document.getElementById('toggleBtn');
+
+    // Toggle Show/Hide
+
+    toggleBtn.onclick = function() {
+        if (password.type == "password") {
+            password.type = "text";
+            toggleBtn.textContent = "🙈";
+
+        } else{
+            password.type = "password";
+            toggleBtn.textContent = "👁";
+        }
+    };
+
+    // Stength checker
+    password.oninput = function () {
+        let point = 0;
+        let value = password.value;
+
+        let widthPower = ["1%", "25%", "50%", "75%", "100%"];
+        let colorPower =  ["#d73f40", "#dc6551", "#f2b84f", "#bde952", "#3ba62f"];
+
+        let textPower = ["Very Weak", "Weak", "Medium", "Strong", "Very Strong"];
+
+        if (value.length >= 6) {
+            let arrayTest = [/[0-9]/, /[a-z]/, /[A-Z]/, /[^0-9a-zA-Z]/];
+
+            arrayTest.forEach((item) => {
+                if (item.test(value)) {
+                    point +=1
+                }
+            })
+        }
+
+        power.style.width = widthPower[point];
+        power.style.backgroundColor = colorPower[point];
+        strengthText.innerText = textPower[point];
+
+}
+</script>
+</html>
