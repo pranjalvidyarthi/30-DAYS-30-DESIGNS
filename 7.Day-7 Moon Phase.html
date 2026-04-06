@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Lunar Observatory</title>
+    <style>
+        body { margin: 0; background-color: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
+        
+        /* Cyberpunk UI Overlay */
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #0ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            pointer-events: none;
+        }
+
+        #phase-caption {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .glitch-box {
+            border-left: 4px solid #f0f;
+            padding-left: 10px;
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .stats {
+            font-size: 0.8rem;
+            color: #f0f;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hud">
+        <div class="stats">// SYSTEM_ONLINE // LUNAR_TRACKING</div>
+        <div id="phase-caption">INITIALIZING...</div>
+        <div class="glitch-box">SECTOR: 0X-LUNA-42</div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- SCENE SETUP ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // --- MOON OBJECT ---
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        
+        // Load textures from public assets
+        const textureLoader = new THREE.TextureLoader();
+        const moonTexture = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg');
+        const moonBump = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_bump_1024.jpg');
+
+        const material = new THREE.MeshStandardMaterial({
+            map: moonTexture,
+            bumpMap: moonBump,
+            bumpScale: 0.05,
+            metalness: 0.1,
+            roughness: 0.8
+        });
+        
+        const moon = new THREE.Mesh(geometry, material);
+        scene.add(moon);
+
+        // --- LIGHTING (The "Sun") ---
+        // A directional light that orbits the moon to create phases
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+        scene.add(sunLight);
+
+        // Ambient light for the "Dark Side" (Cyberpunk neon tint)
+        const ambientLight = new THREE.AmbientLight(0x110022, 0.5); 
+        scene.add(ambientLight);
+
+        // Point light for a subtle purple rim-glow
+        const rimLight = new THREE.PointLight(0xff00ff, 0.5);
+        rimLight.position.set(-5, 2, -5);
+        scene.add(rimLight);
+
+        camera.position.z = 5;
+
+        // --- MOON PHASE LOGIC ---
+        const phases = [
+            "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous",
+            "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"
+        ];
+
+        const captionEl = document.getElementById('phase-caption');
+        let angle = 0;
+
+        // --- ANIMATION LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the "Sun" around the moon
+            angle += 0.005;
+            sunLight.position.x = Math.sin(angle) * 10;
+            sunLight.position.z = Math.cos(angle) * 10;
+
+            // Slow rotation for the moon itself
+            moon.rotation.y += 0.002;
+
+            // Calculate Phase Index based on angle
+            // Normalize angle to 0 - 2PI and map to phases array
+            const normalizedAngle = (angle % (Math.PI * 2));
+            const phaseIndex = Math.floor(((normalizedAngle / (Math.PI * 2)) * phases.length));
+            
+            if (captionEl.innerText !== phases[phaseIndex]) {
+                captionEl.innerText = phases[phaseIndex];
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
