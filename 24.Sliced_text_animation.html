@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3D Text Animation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: rgba(20, 5, 5, 1);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  perspective: 800px;
+  font-family: 'Anton', sans-serif;
+}
+
+#ui {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+/* TEXT */
+.text {
+  position: absolute;
+  font-size: 8rem;
+  line-height: 8rem;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  animation: fly 5s infinite alternate;
+}
+
+/* Different variations (simulating SCSS randomness) */
+.text:nth-child(1)  { color: #ff4d4d; animation-delay: 0s; }
+.text:nth-child(2)  { color: #ff884d; animation-delay: 0.2s; }
+.text:nth-child(3)  { color: #ffaa00; animation-delay: 0.4s; }
+.text:nth-child(4)  { color: #ffee00; animation-delay: 0.6s; }
+.text:nth-child(5)  { color: #aaff00; animation-delay: 0.8s; }
+.text:nth-child(6)  { color: #55ff99; animation-delay: 1s; }
+.text:nth-child(7)  { color: #00e6e6; animation-delay: 1.2s; }
+.text:nth-child(8)  { color: #3399ff; animation-delay: 1.4s; }
+.text:nth-child(9)  { color: #9966ff; animation-delay: 1.6s; }
+.text:nth-child(10) { color: #ff66cc; animation-delay: 1.8s; }
+
+/* repeat pattern */
+.text:nth-child(n+11) {
+  animation-delay: calc((var(--i) * 0.2s));
+}
+
+/* ANIMATION */
+@keyframes fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotateX(90deg) rotateY(90deg) translateZ(-500px);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) translateZ(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) translateZ(0px);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+  <!-- 40 text layers -->
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+  <div class="text">The Creative Coder</div>
+</div>
+
+</body>
+</html>

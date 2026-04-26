@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation drawer</title>
+</head>
+<style>
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: rgba(244, 242, 238, 0.873);
+}
+
+.drawer{
+    position: relative;
+}
+
+.drawer .navigation{
+    position: relative;
+    width: 80px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 20px 20px 50px rgba(0,0,0,0.5);
+    border-radius: 10px;
+    transition: 0.5s;
+    overflow: hidden;
+}
+
+.drawer .navigation .menu{
+    position: relative;
+    width: 100%;
+    padding: 30px 10px;
+    transition: 0.5s;
+}
+
+.drawer .navigation .menu li{
+    list-style: none;
+}
+
+.drawer .navigation .menu li a{
+
+    position: relative;
+    display: flex;
+    text-decoration: none;
+    color: #111;
+    border-radius: 30px;
+}
+
+.drawer .navigation .menu li a:hover{
+    background: royalblue;
+    color: white;
+}
+
+.drawer .navigation .menu li a .icon{
+    position: relative;
+    min-width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+.drawer .navigation .menu li a .text{
+    position: relative;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25em;
+        margin-left: 10px;
+
+}
+
+.drawer .menu_toggle {
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 50px;
+    background: #fff;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    z-index: 100;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* overflow: hidden; */
+}
+
+.drawer .menu_toggle::before{
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    background-color: transparent;
+    border-bottom-left-radius: 15px;
+    box-shadow: -5px 2px #fff;
+}
+
+.drawer .menu_toggle::after{
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    background-color: transparent;
+    border-top-left-radius: 15px;
+    box-shadow: -5px -2px #fff;
+}
+
+.drawer .menu_toggle span{
+    position: relative;
+    left: -8px;
+    display: inline-block;
+    height: 25px;
+    min-width: 25px;
+    /* background-color: red; */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.drawer .menu_toggle span::before{
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid royalblue;
+    border-right: 2px solid royalblue;
+    transform: rotate(45deg);
+}
+
+.drawer .navigation.active{
+    width: 300px;
+}
+
+.drawer .menu_toggle.active span::before{
+    transform: rotate(180deg);
+}
+
+</style>
+
+<body>
+    
+    <div class="drawer">
+                    <div class="menu_toggle"><span></span></div>
+
+        <div class="navigation">
+            <ul class="menu">
+                
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="videocam-outline"></ion-icon></span>
+                        <span class="text">Videos</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="wallet-outline"></ion-icon></span>
+                        <span class="text">Revenue</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="chatbox-outline"></ion-icon></span>
+                        <span class="text">Inbox</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                        <span class="text">Setting</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                        <span class="text">LogOut</span>
+                    </a>
+                </li>
+        </div>
+    </div>
+    <ul>
+
+</body>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<script>
+    // Creating active
+    const mneu_toggle = document.querySelector('.menu_toggle');
+    const navigation = document.querySelector('.navigation');
+    mneu_toggle.onclick = function() {
+        navigation.classList.toggle('active');
+        mneu_toggle.classList.toggle('active');
+    }
+</script>
+</html>

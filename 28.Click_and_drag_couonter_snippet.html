@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Solar Explorer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body { 
+            margin: 0; 
+            background-color: #000; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', sans-serif; 
+        }
+
+        /* UI Layer */
+        #ui-layer {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            color: white;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 5px;
+        }
+
+        .description {
+            max-width: 400px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-val {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #4cc9f0;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        /* Navigation */
+        #nav {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            text-align: left;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        button:hover {
+            background: #4cc9f0;
+            color: black;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <h1>EARTH</h1>
+        <p class="description">The third planet from the Sun and the only astronomical object known to harbor life.</p>
+    </div>
+
+    <div class="stats-panel">
+        <div class="stat-box"><span class="stat-val">12,742 km</span><span class="stat-label">Diameter</span></div>
+        <div class="stat-box"><span class="stat-val">29.78 km/s</span><span class="stat-label">Orbit Speed</span></div>
+        <div class="stat-box"><span class="stat-val">149.6M km</span><span class="stat-label">Dist. from Sun</span></div>
+    </div>
+
+
+
+    <div id="canvas-container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        let scene, camera, renderer, earth, clouds, starField, controls;
+        const loader = new THREE.TextureLoader();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 3;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Lighting
+            const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+            scene.add(ambient);
+
+            const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+            sunLight.position.set(5, 3, 5);
+            scene.add(sunLight);
+
+            // Textures
+            const earthMap = loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
+            const earthNormal = loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg');
+            const earthSpec = loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_specular_2048.jpg');
+            const cloudMap = loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_clouds_1024.png');
+
+            // Planet
+            const geometry = new THREE.SphereGeometry(1, 64, 64);
+            const material = new THREE.MeshPhongMaterial({
+                map: earthMap,
+                normalMap: earthNormal,
+                specularMap: earthSpec,
+                specular: new THREE.Color('grey'),
+                shininess: 15
+            });
+            earth = new THREE.Mesh(geometry, material);
+            scene.add(earth);
+
+            // Clouds
+            const cloudGeo = new THREE.SphereGeometry(1.02, 64, 64);
+            const cloudMat = new THREE.MeshPhongMaterial({
+                map: cloudMap,
+                transparent: true,
+                opacity: 0.6
+            });
+            clouds = new THREE.Mesh(cloudGeo, cloudMat);
+            scene.add(clouds);
+
+            // Stars
+            const starGeo = new THREE.SphereGeometry(90, 64, 64);
+            const starMat = new THREE.MeshBasicMaterial({
+                map: loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/galaxy_starfield.png'),
+                side: THREE.BackSide
+            });
+            starField = new THREE.Mesh(starGeo, starMat);
+            scene.add(starField);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.rotateSpeed = 0.5;
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            earth.rotation.y += 0.0015;
+            clouds.rotation.y += 0.002;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init();
+    </script>
+</body>
+</html>
